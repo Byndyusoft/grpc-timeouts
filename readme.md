@@ -52,17 +52,17 @@ const server = new GrpcHostBuilder()
 
 ## API
 ### CircuitBreaker
-<img src="https://static.npmjs.com/255a118f56f5346b97e56325a1217a16.svg" width="20"> `constructor([options: ICircuitBreakerOptions])`
+`constructor([options: ICircuitBreakerOptions])`
 
 Options is an optional object with timeouts for methods (default timeout is 10 seconds).
 
 #### serverInterceptor
-<img src="https://static.npmjs.com/255a118f56f5346b97e56325a1217a16.svg" width="20"> `IServerInterceptor`
+`IServerInterceptor`
 
 Server interceptor function.
 
 #### clientInterceptor
-<img src="https://static.npmjs.com/255a118f56f5346b97e56325a1217a16.svg" width="20"> `IClientInterceptor`
+`IClientInterceptor`
 
 Client interceptor function.
 
@@ -91,11 +91,11 @@ An object which keys is camelCased method names and values is milliseconds. \
 This object also have `default` field that can be reassigned.
 
 ### IServerInterceptor
-<img src="https://static.npmjs.com/255a118f56f5346b97e56325a1217a16.svg" width="20"> `(call: Object, methodDefinition: Object, next: Function) => Promise<Object>` \
+`(call: Object, methodDefinition: Object, next: Function) => Promise<Object>` \
 A function that can be used as server interceptor.
 
 ### IClientInterceptor
-<img src="https://static.npmjs.com/255a118f56f5346b97e56325a1217a16.svg" width="20"> `(options: Object, next: Function) => grpc.InterceptingCall` \
+`(options: Object, next: Function) => grpc.InterceptingCall` \
 A function that can be used as client interceptor.
 
 ## Related
