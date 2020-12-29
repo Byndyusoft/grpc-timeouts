@@ -1,0 +1,62 @@
+{
+  "name": "@byndyusoft/grpc-timeouts",
+  "version": "0.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Byndyusoft/grpc-timeouts.git"
+  },
+  "keywords": [
+    "byndyusoft",
+    "grpc",
+    "grpc-timeouts",
+    "circuit-breaker",
+    "fail-fast",
+    "timeout",
+    "TypeScript"
+  ],
+  "author": "Byndyusoft",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Byndyusoft/grpc-timeouts/issues"
+  },
+  "homepage": "https://github.com/Byndyusoft/grpc-timeouts#readme",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "lint": "eslint ./src",
+    "lint:fix": "eslint ./src --fix",
+    "prebuild": "npm ci",
+    "prepublishOnly": "npm run build",
+    "test": "npm run lint",
+    "version:upd": "npm version patch"
+  },
+  "publishConfig": {
+    "registry": "https://art.lmru.tech/api/npm/npm-local-marketplace/"
+  },
+  "devDependencies": {
+    "@byndyusoft/eslint-config": "^0.3.0",
+    "@typescript-eslint/eslint-plugin": "^4.8.1",
+    "@typescript-eslint/parser": "^4.8.1",
+    "eslint": "^7.16.0",
+    "rimraf": "^3.0.2",
+    "sonarqube-scanner": "2.7.0",
+    "typescript": "^4.0.5"
+  },
+  "dependencies": {
+    "camelcase": "^6.2.0",
+    "grpc": "^1.24.4",
+    "processing-context": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=10.0.0"
+  },
+  "contributors": [
+    "Dmitry221060 <ya.dima42103ya@yandex.ru>"
+  ]
+}

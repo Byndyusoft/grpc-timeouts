@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "@byndyusoft/eslint-config/typescript",
+    "@byndyusoft/eslint-config/node"
+  ],
+  "rules": {
+    "node/no-missing-import": ["error", {
+      "tryExtensions": [".ts", ".js", ".json", ".node"]
+    }],
+    "node/callback-return": "off",
+    "node/no-unsupported-features/es-syntax": "off",
+    "class-methods-use-this": "off"
+  },
+  "parserOptions": {
+    "project": "tsconfig.json"
+  }
+}
