@@ -2,12 +2,8 @@
 name: deploy workflow
 
 on:
-  workflow_dispatch:
-    inputs:
-      dry_run:
-        description: Dry run
-        required: true
-        default: "false"
+  release:
+    types: [created]
 
 jobs:
   deploy:
