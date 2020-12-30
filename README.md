@@ -20,6 +20,7 @@
   - [IServerInterceptor](#iserverinterceptor)
   - [IClientInterceptor](#iclientinterceptor)
 - [Related](#related)
+- [Maintainers](#maintainers)
 
 ## About
 `grpc-timeouts` is a small library that makes it easy to add customizable timeouts to your services. The library implements a circuit breaker pattern, which means that if the request exceeds the deadline, no further requests will be sent. If the deadline for a received request has expired, the request will not be processed and service instantly answers with code 4 (Deadline exceeded).
@@ -100,3 +101,6 @@ A function that can be used as client interceptor.
 
 ## Related
 [grpc-host-builder](https://www.npmjs.com/package/grpc-host-builder)
+
+## Maintainers
+@Byndyusoft/owners: https://github.com/orgs/Byndyusoft/teams/owners, github.maintain@byndyusoft.com
