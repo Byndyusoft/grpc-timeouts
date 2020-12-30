@@ -1,0 +1,59 @@
+name: assets workflow
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  assets:
+    name: assets
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: install nodejs
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "14"
+
+      - name: extract tag from ref
+        uses: rlespinasse/github-slug-action@v3.x
+
+      - name: extract version from tag
+        id: version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF_SLUG | cut -c2-)
+
+      - name: update version in package.json
+        run: yarn version --new-version ${{ steps.version.outputs.VERSION }} --no-git-tag-version
+
+      - name: install dependencies
+        run: yarn install --production false --frozen-lockfile
+
+      - name: build
+        run: yarn run build
+
+      - name: build standalone
+        run: yarn run build:standalone
+
+      - name: pack
+        run: yarn pack
+
+      - name: upload package to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: "*.tgz"
+          tag: ${{ github.ref }}
+          file_glob: true
+          overwrite: true
+
+      - name: upload binaries to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: "standalone/*"
+          tag: ${{ github.ref }}
+          file_glob: true
+          overwrite: true
