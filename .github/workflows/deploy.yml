@@ -1,0 +1,33 @@
+  
+name: deploy workflow
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: install nodejs
+        uses: actions/setup-node@v2-beta
+        with:
+          node-version: "14"
+
+      - name: install dependencies
+        run: yarn install --production false --frozen-lockfile
+
+      - name: build
+        run: yarn run build
+
+      - name: semantic release
+        uses: cycjimmy/semantic-release-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        with:
+          dry_run: ${{ github.event.inputs.dry_run }}

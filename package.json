@@ -36,9 +36,6 @@
     "test": "npm run lint",
     "version:upd": "npm version patch"
   },
-  "publishConfig": {
-    "registry": "https://art.lmru.tech/api/npm/npm-local-marketplace/"
-  },
   "devDependencies": {
     "@byndyusoft/eslint-config": "^0.3.0",
     "@typescript-eslint/eslint-plugin": "^4.8.1",
