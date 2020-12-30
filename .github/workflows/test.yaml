@@ -29,5 +29,5 @@ jobs:
       - name: lint
         run: yarn run lint
 
-      - name: test
-        run: yarn run test:coverage
+#      - name: test
+#        run: yarn run test:coverage
