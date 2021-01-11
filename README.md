@@ -82,8 +82,8 @@ An object with following keys:
     default: 5000 //default was 10000
   },
   minResponseTimeouts: {
-  	createOrder: 280,
-  	default: 50 //default was 0
+    createOrder: 280,
+    default: 50 //default was 0
   }
 }
 ```
