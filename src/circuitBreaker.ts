@@ -56,13 +56,16 @@ export class CircuitBreaker implements ICircuitBreaker {
   public get clientInterceptor(): IClientInterceptor {
     return (options: IInterceptingCallOptions, next: INextCall) => {
       const method = getMethodName(options.method_definition.path);
+      const timeout = this.timeouts[method] ?? this.timeouts.default;
       const minResponseTimeout = this.minResponseTimeouts[method] ?? 0;
+
       const call = new InterceptingCall(next(options), {
         start(metadata, listener, next_start) {
           const now = Date.now();
           const fastestPossibleResponse = now + minResponseTimeout;
 
-          const deadline = Number(defaultContext.get("deadline"));
+          const totalDeadline = defaultContext.get("deadline") as number | undefined;
+          const deadline = totalDeadline ?? now + timeout;
           metadata.set("grpc-total-deadline", String(deadline));
 
           if (fastestPossibleResponse > deadline) cancelRequest(call, method, false);

@@ -38,8 +38,6 @@
   },
   "devDependencies": {
     "@byndyusoft/eslint-config": "^0.3.0",
-    "@typescript-eslint/eslint-plugin": "^4.8.1",
-    "@typescript-eslint/parser": "^4.8.1",
     "eslint": "^7.16.0",
     "rimraf": "^3.0.2",
     "typescript": "^4.0.5"
