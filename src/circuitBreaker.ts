@@ -14,6 +14,9 @@ import {
   IMetaDataMap
 } from "./defs"
 
+const DEFAULT_TIMEOUT = 10000;
+const DEFAULT_MINIMAL_RESPONSE_TIME = 0;
+
 export interface ICircuitBreaker {
   serverInterceptor: IServerInterceptor;
   clientInterceptor: IClientInterceptor;
@@ -24,9 +27,8 @@ export class CircuitBreaker implements ICircuitBreaker {
   private readonly minResponseTimeouts: ITimeouts;
 
   public constructor(options?: ICircuitBreakerOptions) {
-    //eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    this.timeouts = this.parseTimeouts(options?.timeouts, 10 * 1000);
-    this.minResponseTimeouts = this.parseTimeouts(options?.minResponseTimeouts, 0);
+    this.timeouts = parseTimeouts(options?.timeouts, DEFAULT_TIMEOUT);
+    this.minResponseTimeouts = parseTimeouts(options?.minResponseTimeouts, DEFAULT_MINIMAL_RESPONSE_TIME);
   }
 
   public get serverInterceptor(): IServerInterceptor {
@@ -75,19 +77,6 @@ export class CircuitBreaker implements ICircuitBreaker {
       return call;
     }
   }
-
-  private parseTimeouts(maybeTimeouts: unknown, defaultTimeout: number): ITimeouts {
-    if (!(maybeTimeouts instanceof Object)) return { default: defaultTimeout };
-
-    const timeouts = maybeTimeouts as Record<string, unknown>;
-    for (const key of Object.keys(timeouts)) {
-      const value = Number(timeouts[key]);
-      if (Number.isNaN(value)) throw new Error(`Timeout for method ${key} has type ${typeof timeouts[key]} but number expected`);
-      timeouts[key] = value;
-    }
-
-    return Object.assign({ default: defaultTimeout }, timeouts as ITimeouts);
-  }
 }
 
 function cancelRequest(call: InterceptingCall, method: string, incoming = true): Record<never, never> {
@@ -102,4 +91,17 @@ function getMethodName(protoPath: string): string {
   const methodName = protoPath.split("/").pop();
   if (!methodName) return protoPath;
   return camelCase(methodName);
+}
+
+function parseTimeouts(maybeTimeouts: unknown, defaultTimeout: number): ITimeouts {
+  if (!(maybeTimeouts instanceof Object)) return { default: defaultTimeout };
+
+  const timeouts = maybeTimeouts as Record<string, unknown>;
+  for (const key of Object.keys(timeouts)) {
+    const value = Number(timeouts[key]);
+    if (Number.isNaN(value)) throw new Error(`Timeout for method ${key} has type ${typeof timeouts[key]} but number expected`);
+    timeouts[key] = value;
+  }
+
+  return Object.assign({ default: defaultTimeout }, timeouts as ITimeouts);
 }
