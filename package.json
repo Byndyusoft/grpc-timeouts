@@ -1,6 +1,6 @@
 {
   "name": "@byndyusoft/grpc-timeouts",
-  "version": "0.0.0-development",
+  "version": "1.0.1",
   "description": "A library for customizable gRPC timeouts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
