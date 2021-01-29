@@ -1,16 +1,32 @@
 {
   "extends": [
     "@byndyusoft/eslint-config/typescript",
+    "@byndyusoft/eslint-config/jest",
     "@byndyusoft/eslint-config/node"
   ],
   "rules": {
-    "node/no-missing-import": ["error", {
-      "tryExtensions": [".ts", ".js", ".json", ".node"]
-    }],
-    "node/callback-return": "off",
-    "node/no-unsupported-features/es-syntax": "off",
-    "class-methods-use-this": "off"
+    "node/callback-return": "off"
   },
+  "overrides": [
+    {
+      "files": ["*.ts"],
+      "rules": {
+        "node/no-missing-import": ["error", {
+          "tryExtensions": [".ts", ".js", ".json", ".node"]
+        }],
+        "node/no-unsupported-features/es-syntax": "off"
+      }
+    },
+    {
+      "files": ["*.spec.ts"],
+      "rules": {
+        "@typescript-eslint/no-magic-numbers": "off",
+        "@typescript-eslint/unbound-method": "off",
+        "jest/consistent-test-it": ["error", {}],
+        "import/first": "off"
+      }
+    }
+  ],
   "parserOptions": {
     "project": "tsconfig.json"
   }
