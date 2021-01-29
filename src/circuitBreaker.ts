@@ -11,7 +11,8 @@ import {
   IMethodDefinition,
   IServiceCallHandler,
   INextCall,
-  IMetaDataMap
+  IMetaDataMap,
+  IDeadlineInfo
 } from "./defs"
 
 const DEFAULT_TIMEOUT = 10000;
@@ -34,16 +35,10 @@ export class CircuitBreaker implements ICircuitBreaker {
   public get serverInterceptor(): IServerInterceptor {
     return async (call: TServiceCall, methodDefinition: IMethodDefinition, next: IServiceCallHandler) => {
       const callMetadata = call.metadata.getMap() as IMetaDataMap;
-
-      const method = methodDefinition.originalName ?? getMethodName(methodDefinition.path);
-      const timeout = this.timeouts[method] ?? this.timeouts.default;
-      const minResponseTimeout = this.minResponseTimeouts[method] ?? 0;
       const now = Date.now();
-      const fastestPossibleResponse = now + minResponseTimeout;
+      const deadlineInfo = this.getDeadlineForMethod(methodDefinition, callMetadata["grpc-total-deadline"], now);
+      const { deadline, fastestPossibleResponse, method } = deadlineInfo;
 
-      const ownDeadline = now + timeout;
-      const totalDeadline = Number(callMetadata["grpc-total-deadline"] ?? ownDeadline);
-      const deadline = Math.min(totalDeadline, ownDeadline);
       defaultContext.set("deadline", deadline);
 
       if (fastestPossibleResponse > deadline) return cancelRequest(call.call, method);
@@ -57,25 +52,33 @@ export class CircuitBreaker implements ICircuitBreaker {
 
   public get clientInterceptor(): IClientInterceptor {
     return (options: IInterceptingCallOptions, next: INextCall) => {
-      const method = getMethodName(options.method_definition.path);
-      const timeout = this.timeouts[method] ?? this.timeouts.default;
-      const minResponseTimeout = this.minResponseTimeouts[method] ?? 0;
-
       const call = new InterceptingCall(next(options), {
-        start(metadata, listener, next_start) {
-          const now = Date.now();
-          const fastestPossibleResponse = now + minResponseTimeout;
+        start: (metadata, listener, next_start) => {
+          const deadlineInfo = this.getDeadlineForMethod(options.method_definition, defaultContext.get("deadline"));
+          const { deadline, fastestPossibleResponse, method } = deadlineInfo;
 
-          const totalDeadline = defaultContext.get("deadline") as number | undefined;
-          const deadline = totalDeadline ?? now + timeout;
           metadata.set("grpc-total-deadline", String(deadline));
 
           if (fastestPossibleResponse > deadline) cancelRequest(call, method, false);
           else next_start(metadata, listener);
         }
       });
+
       return call;
     }
+  }
+
+  private getDeadlineForMethod(methodDefinition: IMethodDefinition, maybeTotalDeadline: unknown, now = Date.now()): IDeadlineInfo {
+    const method = methodDefinition.originalName ?? getMethodName(methodDefinition.path);
+    const timeout = this.timeouts[method] ?? this.timeouts.default;
+    const minResponseTimeout = this.minResponseTimeouts[method] ?? this.minResponseTimeouts.default;
+    const fastestPossibleResponse = now + minResponseTimeout;
+
+    const ownDeadline = now + timeout;
+    const totalDeadline = Number(maybeTotalDeadline ?? ownDeadline);
+    const deadline = Math.min(totalDeadline, ownDeadline);
+
+    return { deadline, fastestPossibleResponse, method };
   }
 }
 

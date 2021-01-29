@@ -14,8 +14,8 @@ export interface ITimeouts {
 }
 
 export interface ICircuitBreakerOptions {
-  timeouts?: ITimeouts;
-  minResponseTimeouts?: ITimeouts;
+  timeouts?: Partial<ITimeouts>;
+  minResponseTimeouts?: Partial<ITimeouts>;
 }
 
 export interface IServerInterceptor<RequestType = unknown, ResponseType = unknown> {
@@ -26,6 +26,12 @@ export interface IClientInterceptor {
   (options: IInterceptingCallOptions, next: INextCall): InterceptingCall;
 }
 
+
+export interface IDeadlineInfo {
+  deadline: number,
+  fastestPossibleResponse: number,
+  method: string
+}
 
 export type TServiceCall<RequestType = unknown, ResponseType = unknown> =
   (
