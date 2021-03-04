@@ -25,6 +25,11 @@
 ## About
 `grpc-timeouts` is a small library that makes it easy to add customizable timeouts to your services. The library implements a circuit breaker pattern, which means that if the request exceeds the deadline, no further requests will be sent. If the deadline for a received request has expired, the request will not be processed and service instantly answers with code 4 (Deadline exceeded).
 
+## Release New version
+
+For new version use https://github.com/semantic-release/semantic-release description.
+We must set commit message fix(pencil): New feature in release
+
 ## Installation
 
 `npm i @byndyusoft/grpc-timeouts`
